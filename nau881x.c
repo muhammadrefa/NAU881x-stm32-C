@@ -140,7 +140,7 @@ nau881x_status_t NAU881x_Set_Boost_Volume(NAU881x_t* nau881x, nau881x_input_t in
     int8_t shift = -1;
     switch (input)
     {
-        case NAU881X_INPUT_AUX: shift = 0; break;
+        case NAU8814_INPUT_AUX: shift = 0; break;
         case NAU881X_INPUT_MICP: shift = 4; break;
         default: break;
     }
@@ -592,6 +592,159 @@ nau881x_status_t NAU881x_Set_Equalizer5_Frequency(NAU881x_t* nau881x, nau881x_eq
     return NAU881X_STATUS_OK;
 }
 
+/* ----- Analog outputs ----- */
+nau881x_status_t NAU881x_Set_Output_Enable(NAU881x_t* nau881x, nau881x_output_t output)
+{
+    uint16_t regval = nau881x->_register[NAU881X_REG_POWER_MANAGEMENT_3];
+    regval &= ~(NAU881X_PM3_SPKMIX | NAU881X_PM3_SPKP | NAU881X_PM3_SPKN);
+    regval &= ~(NAU881X_PM3_MOUTMIX | NAU881X_PM3_MOUT);
+
+    if (output & NAU881X_OUTPUT_SPK)
+        regval |= NAU881X_PM3_SPKMIX | NAU881X_PM3_SPKP | NAU881X_PM3_SPKN;
+    if (output & NAU881X_OUTPUT_MOUT)
+        regval |= NAU881X_PM3_MOUTMIX | NAU881X_PM3_MOUT;
+
+    if (output & NAU881X_OUTPUT_MOUT_DIFFERENTIAL)
+    {
+        // TODO: SPKMOUT
+        regval |= NAU881X_PM3_MOUTMIX | NAU881X_PM3_MOUT | NAU881X_PM3_SPKN;
+    }
+
+    NAU881X_REG_WRITE(nau881x->comm_handle, NAU881X_REG_POWER_MANAGEMENT_3, regval);
+    nau881x->_register[NAU881X_REG_POWER_MANAGEMENT_3] = regval;
+    return NAU881X_STATUS_OK;
+}
+
+nau881x_status_t NAU881x_Set_Speaker_Source(NAU881x_t* nau881x, nau881x_output_source_t source)
+{
+    uint16_t regval = nau881x->_register[NAU881X_REG_SPK_MIXER_CTRL];
+    regval &= ~(0x03 << 0);
+    regval &= ~(1 << 5);
+    if (source & NAU8814_OUTPUT_FROM_AUX) source = (source & NAU8814_OUTPUT_FROM_AUX) | (1 << 5);
+    regval |= source;
+    NAU881X_REG_WRITE(nau881x->comm_handle, NAU881X_REG_SPK_MIXER_CTRL, regval);
+    nau881x->_register[NAU881X_REG_SPK_MIXER_CTRL] = regval;
+    return NAU881X_STATUS_OK;
+}
+
+nau881x_status_t NAU881x_Set_Speaker_FromBypass_Attenuation(NAU881x_t* nau881x, uint8_t enable)
+{
+    uint16_t regval = nau881x->_register[NAU881X_REG_ATTN_CTRL];
+    regval &= ~(1 << 1);
+    regval |= (enable ? 1 : 0) << 1;
+    NAU881X_REG_WRITE(nau881x->comm_handle, NAU881X_REG_ATTN_CTRL, regval);
+    nau881x->_register[NAU881X_REG_ATTN_CTRL] = regval;
+    return NAU881X_STATUS_OK;
+}
+
+nau881x_status_t NAU881x_Set_Speaker_Boost(NAU881x_t* nau881x, uint8_t enable)
+{
+    uint16_t regval = nau881x->_register[NAU881X_REG_OUTPUT_CTRL];
+    regval &= ~(1 << 2);
+    regval |= (enable ? 1 : 0) << 2;
+    NAU881X_REG_WRITE(nau881x->comm_handle, NAU881X_REG_OUTPUT_CTRL, regval);
+    nau881x->_register[NAU881X_REG_OUTPUT_CTRL] = regval;
+    return NAU881X_STATUS_OK;
+}
+
+nau881x_status_t NAU881x_Set_Speaker_ZeroCross(NAU881x_t* nau881x, uint8_t state)
+{
+    uint16_t regval = nau881x->_register[NAU881X_REG_SPK_VOL_CTRL];
+    regval &= ~(1 << 7);
+    regval |= (state ? 1 : 0) << 7;
+    NAU881X_REG_WRITE(nau881x->comm_handle, NAU881X_REG_SPK_VOL_CTRL, regval);
+    nau881x->_register[NAU881X_REG_SPK_VOL_CTRL] = regval;
+    return NAU881X_STATUS_OK;
+}
+
+nau881x_status_t NAU881x_Set_Speaker_Mute(NAU881x_t* nau881x, uint8_t state)
+{
+    uint16_t regval = nau881x->_register[NAU881X_REG_SPK_VOL_CTRL];
+    regval &= ~(1 << 6);
+    regval |= (state ? 1 : 0) << 6;
+    NAU881X_REG_WRITE(nau881x->comm_handle, NAU881X_REG_SPK_VOL_CTRL, regval);
+    nau881x->_register[NAU881X_REG_SPK_VOL_CTRL] = regval;
+    return NAU881X_STATUS_OK;
+}
+
+nau881x_status_t NAU881x_Set_Speaker_Volume(NAU881x_t* nau881x, uint8_t val)
+{
+    if (val > 0x3F)
+        return NAU881X_STATUS_INVALID;
+
+    uint16_t regval = nau881x->_register[NAU881X_REG_SPK_VOL_CTRL];
+    regval &= ~(0x3F << 0);
+    regval |= (val & 0x3F) << 0;
+    NAU881X_REG_WRITE(nau881x->comm_handle, NAU881X_REG_SPK_VOL_CTRL, regval);
+    nau881x->_register[NAU881X_REG_SPK_VOL_CTRL] = regval;
+    return NAU881X_STATUS_OK;
+}
+
+nau881x_status_t NAU881x_Set_Speaker_Volume_db(NAU881x_t* nau881x, int8_t vol_db)
+{
+    if ((vol_db < -57) || (vol_db >= 6))
+        return NAU881X_STATUS_INVALID;
+
+    return NAU881x_Set_Speaker_Volume(nau881x, NAU881X_SPKVOL_DB_TO_REG_VALUE(vol_db));
+}
+
+uint8_t NAU881x_Get_Speaker_Volume(NAU881x_t* nau881x)
+{
+    return nau881x->_register[NAU881X_REG_SPK_VOL_CTRL] & 0x3F;
+}
+
+uint8_t NAU881x_Get_Speaker_Volume_db(NAU881x_t* nau881x)
+{
+    return NAU881X_SPKVOL_REG_VALUE_TO_DB(NAU881x_Get_Speaker_Volume(nau881x));
+}
+
+nau881x_status_t NAU881X_Set_Mono_Source(NAU881x_t* nau881x, nau881x_output_source_t source)
+{
+    uint16_t regval = nau881x->_register[NAU881X_REG_MONO_MIXER_CTRL];
+    regval &= ~(0x07 << 0);
+    regval |= source;
+    NAU881X_REG_WRITE(nau881x->comm_handle, NAU881X_REG_MONO_MIXER_CTRL, regval);
+    nau881x->_register[NAU881X_REG_MONO_MIXER_CTRL] = regval;
+    return NAU881X_STATUS_OK;
+}
+
+nau881x_status_t NAU881x_Set_Mono_FromBypass_Attenuation(NAU881x_t* nau881x, uint8_t enable)
+{
+    uint16_t regval = nau881x->_register[NAU881X_REG_ATTN_CTRL];
+    regval &= ~(1 << 2);
+    regval |= (enable ? 1 : 0) << 2;
+    NAU881X_REG_WRITE(nau881x->comm_handle, NAU881X_REG_ATTN_CTRL, regval);
+    nau881x->_register[NAU881X_REG_ATTN_CTRL] = regval;
+    return NAU881X_STATUS_OK;
+}
+
+nau881x_status_t NAU881x_Set_Mono_Boost(NAU881x_t* nau881x, uint8_t enable)
+{
+    uint16_t regval = nau881x->_register[NAU881X_REG_OUTPUT_CTRL];
+    regval &= ~(1 << 3);
+    regval |= (enable ? 1 : 0) << 3;
+    NAU881X_REG_WRITE(nau881x->comm_handle, NAU881X_REG_OUTPUT_CTRL, regval);
+    nau881x->_register[NAU881X_REG_OUTPUT_CTRL] = regval;
+    return NAU881X_STATUS_OK;
+}
+
+nau881x_status_t NAU881x_Set_Mono_Mute(NAU881x_t* nau881x, uint8_t state)
+{
+    uint16_t regval = nau881x->_register[NAU881X_REG_MONO_MIXER_CTRL];
+    regval &= ~(1 << 6);
+    regval |= (state ? 1 : 0) << 6;
+    NAU881X_REG_WRITE(nau881x->comm_handle, NAU881X_REG_MONO_MIXER_CTRL, regval);
+    nau881x->_register[NAU881X_REG_MONO_MIXER_CTRL] = regval;
+
+    regval = nau881x->_register[NAU881X_REG_HIGH_VOLTAGE_CTRL];
+    regval &= ~(1 << 4);
+    regval |= (state ? 1 : 0) << 4;
+    NAU881X_REG_WRITE(nau881x->comm_handle, NAU881X_REG_HIGH_VOLTAGE_CTRL, regval);
+    nau881x->_register[NAU881X_REG_HIGH_VOLTAGE_CTRL] = regval;
+
+    return NAU881X_STATUS_OK;
+}
+
 /* ----- Reset ----- */
 nau881x_status_t NAU881x_SoftwareReset(NAU881x_t* nau881x)
 {
@@ -608,7 +761,7 @@ nau881x_status_t NAU881x_SoftwareReset(NAU881x_t* nau881x)
     nau881x->_register[NAU881X_REG_COMPANDING_CTRL] = 0x0000;
     nau881x->_register[NAU881X_REG_CLOCK_CTRL_1] = 0x0140;
     nau881x->_register[NAU881X_REG_CLOCK_CTRL_2] = 0x0000;
-    nau881x->_register[NAU881X_REG_GPIO_CTRL] = 0x0000;
+    nau881x->_register[NAU8814_REG_GPIO_CTRL] = 0x0000;
     nau881x->_register[NAU881X_REG_DAC_CTRL] = 0x0000;
     nau881x->_register[NAU881X_REG_DAC_VOL] = 0x00FF;
     nau881x->_register[NAU881X_REG_ADC_CTRL] = 0x0100;
@@ -643,7 +796,7 @@ nau881x_status_t NAU881x_SoftwareReset(NAU881x_t* nau881x)
     nau881x->_register[NAU881X_REG_PGA_GAIN_CTRL] = 0x0010;
     nau881x->_register[NAU881X_REG_ADC_BOOST_CTRL] = 0x0100;
     nau881x->_register[NAU881X_REG_OUTPUT_CTRL] = 0x0002;
-    nau881x->_register[NAU881X_REG_MIXER_CTRL] = 0x0001;
+    nau881x->_register[NAU881X_REG_SPK_MIXER_CTRL] = 0x0001;
     nau881x->_register[NAU881X_REG_SPK_VOL_CTRL] = 0x0039;
     nau881x->_register[NAU881X_REG_MONO_MIXER_CTRL] = 0x0001;
     // Low power control

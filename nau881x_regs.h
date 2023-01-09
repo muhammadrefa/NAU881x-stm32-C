@@ -22,7 +22,7 @@ typedef enum _nau881x_register
     NAU881X_REG_COMPANDING_CTRL = 5,
     NAU881X_REG_CLOCK_CTRL_1 = 6,
     NAU881X_REG_CLOCK_CTRL_2 = 7,
-    NAU881X_REG_GPIO_CTRL = 8,      // NAU8814
+    NAU8814_REG_GPIO_CTRL = 8,
 
     NAU881X_REG_DAC_CTRL = 10,
     NAU881X_REG_DAC_VOL = 11,
@@ -60,7 +60,7 @@ typedef enum _nau881x_register
     NAU881X_REG_ADC_BOOST_CTRL = 47,
 
     NAU881X_REG_OUTPUT_CTRL = 49,
-    NAU881X_REG_MIXER_CTRL = 50,
+    NAU881X_REG_SPK_MIXER_CTRL = 50,
 
     NAU881X_REG_SPK_VOL_CTRL = 54,
 
@@ -92,7 +92,7 @@ typedef enum _nau881x_input
     NAU881X_INPUT_NONE = 0,
     NAU881X_INPUT_MICP = (1 << 0),
     NAU881X_INPUT_MICN = (1 << 1),
-    NAU881X_INPUT_AUX = (1 << 2)    // NAU8814
+    NAU8814_INPUT_AUX = (1 << 2)
 } nau881x_input_t;
 
 typedef enum _nau881x_aux_mode
@@ -178,6 +178,32 @@ typedef enum _nau881x_eq5_cutoff_freq
     NAU881X_EQ5_CUTOFF_9000HZ = 2,
     NAU881X_EQ5_CUTOFF_11700HZ = 3
 } nau881x_eq5_cutoff_freq_t;
+
+typedef enum _nau881x_output_source
+{
+    NAU881X_OUTPUT_FROM_NONE = 0,
+    NAU881X_OUTPUT_FROM_DAC = (1 << 0),
+    NAU881X_OUTPUT_FROM_BYPASS = (1 << 1),
+    NAU8814_OUTPUT_FROM_AUX = (1 << 2)
+} nau881x_output_source_t;
+
+typedef enum _nau881x_output
+{
+    NAU881X_OUTPUT_NONE = 0,
+    NAU881X_OUTPUT_SPK = (1 << 0),
+    NAU881X_OUTPUT_MOUT = (1 << 1),
+    NAU881X_OUTPUT_MOUT_DIFFERENTIAL = (1 << 2)
+} nau881x_output_t;
+
+typedef enum _nau881x_power_management_3
+{
+    NAU881X_PM3_DAC = (1 << 0),
+    NAU881X_PM3_SPKMIX = (1 << 2),
+    NAU881X_PM3_MOUTMIX = (1 << 3),
+    NAU881X_PM3_SPKP = (1 << 5),
+    NAU881X_PM3_SPKN = (1 << 6),
+    NAU881X_PM3_MOUT = (1 << 7)
+} nau881x_pm3_t;
 
 #ifdef __cplusplus
 }

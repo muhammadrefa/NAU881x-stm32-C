@@ -11,6 +11,10 @@ extern "C" {
 #define NAU881X_REG_WRITE(handle, reg, val) MyI2C_Write(handle, NAU881X_I2C_ADDRESS, reg, val)
 #define NAU881X_REG_READ(handle, reg) MyI2C_Read(handle, NAU881X_I2C_ADDRESS, reg)
 
+// Volume range: -57 - +6 dB
+#define NAU881X_SPKVOL_DB_TO_REG_VALUE(vol_db) ((vol_db + 57) & 0x3F)
+#define NAU881X_SPKVOL_REG_VALUE_TO_DB(vol_regval) (vol_regval - 57)
+
 
 typedef struct _NAU881x
 {
@@ -38,8 +42,8 @@ nau881x_status_t NAU881x_Set_PGA_Gain_db(NAU881x_t* nau881x, float vol_db);
 nau881x_status_t NAU881x_Set_PGA_Mute(NAU881x_t* nau881x, uint8_t state);
 nau881x_status_t NAU881x_Set_PGA_ZeroCross(NAU881x_t* nau881x, uint8_t state);
 nau881x_status_t NAU881x_Set_PGA_Enable(NAU881x_t* nau881x, uint8_t enable);
-nau881x_status_t NAU881x_Set_Aux_Enable(NAU881x_t* nau881x, uint8_t enable);
-nau881x_status_t NAU881x_Set_Aux_Mode(NAU881x_t* nau881x, nau881x_aux_mode_t mode);
+nau881x_status_t NAU8814_Set_Aux_Enable(NAU881x_t* nau8814, uint8_t enable);
+nau881x_status_t NAU8814_Set_Aux_Mode(NAU881x_t* nau8814, nau881x_aux_mode_t mode);
 nau881x_status_t NAU881x_Set_PGA_Boost(NAU881x_t* nau881x, uint8_t state);
 nau881x_status_t NAU881x_Set_Boost_Volume(NAU881x_t* nau881x, nau881x_input_t input, uint8_t vol);
 nau881x_status_t NAU881x_Set_Boost_Enable(NAU881x_t* nau881x, uint8_t enable);
@@ -87,6 +91,22 @@ nau881x_status_t NAU881x_Set_Equalizer2_Frequency(NAU881x_t* nau881x, nau881x_eq
 nau881x_status_t NAU881x_Set_Equalizer3_Frequency(NAU881x_t* nau881x, nau881x_eq3_center_freq_t center_freq);
 nau881x_status_t NAU881x_Set_Equalizer4_Frequency(NAU881x_t* nau881x, nau881x_eq4_center_freq_t center_freq);
 nau881x_status_t NAU881x_Set_Equalizer5_Frequency(NAU881x_t* nau881x, nau881x_eq5_cutoff_freq_t cutoff_freq);
+
+// Analog outputs
+nau881x_status_t NAU881x_Set_Output_Enable(NAU881x_t* nau881x, nau881x_output_t output);
+nau881x_status_t NAU881x_Set_Speaker_Source(NAU881x_t* nau881x, nau881x_output_source_t source);
+nau881x_status_t NAU881x_Set_Speaker_FromBypass_Attenuation(NAU881x_t* nau881x, uint8_t enable);
+nau881x_status_t NAU881x_Set_Speaker_Boost(NAU881x_t* nau881x, uint8_t enable);
+nau881x_status_t NAU881x_Set_Speaker_ZeroCross(NAU881x_t* nau881x, uint8_t state);
+nau881x_status_t NAU881X_Set_Speaker_Mute(NAU881x_t* nau881x, uint8_t state);
+nau881x_status_t NAU881x_Set_Speaker_Volume(NAU881x_t* nau881x, uint8_t val);
+nau881x_status_t NAU881x_Set_Speaker_Volume_db(NAU881x_t* nau881x, int8_t vol_db);
+uint8_t NAU881x_Get_Speaker_Volume(NAU881x_t* nau881x);
+uint8_t NAU881x_Get_Speaker_Volume_db(NAU881x_t* nau881x);
+nau881x_status_t NAU881x_Set_Mono_Source(NAU881x_t* nau881x, nau881x_output_source_t source);
+nau881x_status_t NAU881x_Set_Mono_FromBypass_Attenuation(NAU881x_t* nau881x, uint8_t enable);
+nau881x_status_t NAU881x_Set_Mono_Boost(NAU881x_t* nau881x, uint8_t enable);
+nau881x_status_t NAU881x_Set_Mono_Mute(NAU881x_t* nau881x, uint8_t state);
 
 #ifdef __cplusplus
 }
