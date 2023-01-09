@@ -108,6 +108,15 @@ nau881x_status_t NAU881x_Set_Mono_FromBypass_Attenuation(NAU881x_t* nau881x, uin
 nau881x_status_t NAU881x_Set_Mono_Boost(NAU881x_t* nau881x, uint8_t enable);
 nau881x_status_t NAU881x_Set_Mono_Mute(NAU881x_t* nau881x, uint8_t state);
 
+// General purpose control
+nau881x_status_t NAU881x_Set_SlowClock_Enable(NAU881x_t* nau881x, uint8_t enable);
+nau881x_status_t NAU8814_Set_GPIO_Control(NAU881x_t* nau8814, nau8814_gpio_function_t function, uint8_t invert_polarity);
+nau881x_status_t NAU8814_Set_ThermalShutdown_Enable(NAU881x_t* nau8814, uint8_t enable);
+
+// Clock generation
+nau881x_status_t NAU881x_Set_PLL_Enable(NAU881x_t* nau881x, uint8_t enable);
+nau881x_status_t NAU881x_Set_PLL_FrequencyRatio(NAU881x_t* nau881x, uint8_t mclk_div2, uint8_t N, uint32_t K);
+
 #ifdef __cplusplus
 }
 #endif

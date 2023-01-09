@@ -1,7 +1,7 @@
 NAU881x audio codec library for STM32
 ======================================
 
-Work in progress and untested.
+**Work in progress and untested**
 
 Compatible with Nuvoton NAU8810, NAU88C10, NAU8814, and NAU88C14 mono audio codecs. Specific NAU8814 (and NAU88C14) features are prefixed by `NAU8814_`
 
@@ -14,12 +14,12 @@ Write your implementation to write/read register from the device. For example:
 ```C
 // --- main.c ---
 
-void MyI2C_Write(i2c_handle, i2c_address, register, value)
+void MyI2C_Write(I2C_HandleTypeDef* i2c_handle, uint8_t i2c_address, uint8_t register, uint16_t value)
 {
     // TODO
 }
 
-uint16_t MyI2C_Read(i2c_handle, i2c_address, register)
+uint16_t MyI2C_Read(I2C_HandleTypeDef* i2c_handle, uint8_t i2c_address, uint8_t register)
 {
     // TODO
 }
@@ -27,8 +27,8 @@ uint16_t MyI2C_Read(i2c_handle, i2c_address, register)
 ```C
 // --- main.h ---
 
-void MyI2C_Write(i2c_handle, i2c_address, register, value);
-uint16_t MyI2C_Read(i2c_handle, i2c_address, register);
+void MyI2C_Write(I2C_HandleTypeDef* i2c_handle, uint8_t i2c_address, uint8_t register, uint16_t value);
+uint16_t MyI2C_Read(I2C_HandleTypeDef* i2c_handle, uint8_t i2c_address, uint8_t register);
 ```
 
 Edit the `nau881x.h` to call your implementation
@@ -85,11 +85,11 @@ int main(void)
 - [X] Analog outputs
     - [X] Speaker mixer
     - [X] Mono mixer
-- [ ] General purpose control
-    - [ ] Slow timer clock
-    - [ ] Jack detect (NAU8814)
-    - [ ] Thermal shutdown (NAU8814)
-- [ ] Clock generation
+- [X] General purpose control
+    - [X] Slow timer clock
+    - [X] Jack detect (NAU8814)
+    - [X] Thermal shutdown (NAU8814)
+- [X] Clock generation
 - [ ] Digital audio interface
 - [ ] Power supply
     - [ ] Power up sequence

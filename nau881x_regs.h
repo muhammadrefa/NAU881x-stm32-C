@@ -195,6 +195,18 @@ typedef enum _nau881x_output
     NAU881X_OUTPUT_MOUT_DIFFERENTIAL = (1 << 2)
 } nau881x_output_t;
 
+typedef enum _nau8814_gpio_function
+{
+    NAU8814_GPIO_FUNCTION_CSB_INPUT = 0,
+    NAU8814_GPIO_FUNCTION_JACK_DETECT = 1,
+    NAU8814_GPIO_FUNCTION_TEMP_OK = 2,
+    NAU8814_GPIO_FUNCTION_AMUTE_ACTIVE = 3,
+    NAU8814_GPIO_FUNCTION_PLL_FREQUENCY_OUTPUT = 4,
+    NAU8814_GPIO_FUNCTION_PLL_LOCK = 5,
+    NAU8814_GPIO_FUNCTION_HIGH = 6,
+    NAU8814_GPIO_FUNCTION_LOW = 7
+} nau8814_gpio_function_t;
+
 typedef enum _nau881x_power_management_3
 {
     NAU881X_PM3_DAC = (1 << 0),

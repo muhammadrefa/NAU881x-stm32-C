@@ -745,6 +745,74 @@ nau881x_status_t NAU881x_Set_Mono_Mute(NAU881x_t* nau881x, uint8_t state)
     return NAU881X_STATUS_OK;
 }
 
+/* ----- General purpose control ----- */
+nau881x_status_t NAU881x_Set_SlowClock_Enable(NAU881x_t* nau881x, uint8_t enable)
+{
+    uint16_t regval = nau881x->_register[NAU881X_REG_CLOCK_CTRL_2];
+    regval &= ~(1 << 0);
+    regval |= (enable ? 1 : 0) << 0;
+    NAU881X_REG_WRITE(nau881x->comm_handle, NAU881X_REG_CLOCK_CTRL_2, regval);
+    regval = nau881x->_register[NAU881X_REG_CLOCK_CTRL_2] = regval;
+    return NAU881X_STATUS_OK;
+}
+
+nau881x_status_t NAU8814_Set_GPIO_Control(NAU881x_t* nau8814, nau8814_gpio_function_t function, uint8_t invert_polarity)
+{
+    if (function > 7)
+        return NAU881X_STATUS_INVALID;
+
+    uint16_t regval = nau8814->_register[NAU8814_REG_GPIO_CTRL];
+    
+    regval &= (0x07 << 0);
+    regval |= function << 0;
+    regval |= (invert_polarity ? 1 : 0) << 3;
+    NAU881X_REG_WRITE(nau8814->comm_handle, NAU8814_REG_GPIO_CTRL, regval);
+    nau8814->_register[NAU8814_REG_GPIO_CTRL] = regval;
+    return NAU881X_STATUS_OK;
+}
+
+nau881x_status_t NAU8814_Set_ThermalShutdown_Enable(NAU881x_t* nau8814, uint8_t enable)
+{
+    uint16_t regval = nau8814->_register[NAU881X_REG_OUTPUT_CTRL];
+    regval &= ~(1 << 1);
+    regval |= (enable ? 1 : 0) << 1;
+    NAU881X_REG_WRITE(nau8814->comm_handle, NAU881X_REG_OUTPUT_CTRL, regval);
+    regval = nau8814->_register[NAU881X_REG_OUTPUT_CTRL] = regval;
+    return NAU881X_STATUS_OK;
+}
+
+/* ----- Clock generation ----- */
+nau881x_status_t NAU881x_Set_PLL_Enable(NAU881x_t* nau881x, uint8_t enable)
+{
+    uint16_t regval = nau881x->_register[NAU881X_REG_POWER_MANAGEMENT_1];
+    regval &= ~(1 << 5);
+    regval |= (enable ? 1 : 0) << 5;
+    NAU881X_REG_WRITE(nau881x->comm_handle, NAU881X_REG_POWER_MANAGEMENT_1, regval);
+    nau881x->_register[NAU881X_REG_POWER_MANAGEMENT_1] = regval;
+    return NAU881X_STATUS_OK;
+}
+
+nau881x_status_t NAU881x_Set_PLL_FrequencyRatio(NAU881x_t* nau881x, uint8_t mclk_div2, uint8_t N, uint32_t K)
+{
+    if (N < 5 || N > 13)
+        return NAU881X_STATUS_INVALID;
+    if (K > 0xFFFFFF)
+        return NAU881X_STATUS_INVALID;
+    
+    uint16_t n_regval = nau881x->_register[NAU881X_REG_PLL_N] & (0x1F << 0);
+    n_regval |= (mclk_div2 ? 1 : 0) << 4;
+    n_regval |= (N & 0x0F);
+    NAU881X_REG_WRITE(nau881x->comm_handle, NAU881X_REG_PLL_K3, K & 0x1FF);
+    NAU881X_REG_WRITE(nau881x->comm_handle, NAU881X_REG_PLL_K2, (K >> 9) & 0x1FF);
+    NAU881X_REG_WRITE(nau881x->comm_handle, NAU881X_REG_PLL_K1, (K >> 18) & 0x3F);
+    NAU881X_REG_WRITE(nau881x->comm_handle, NAU881X_REG_PLL_N, n_regval);
+    nau881x->_register[NAU881X_REG_PLL_K3] = K & 0x1FF;
+    nau881x->_register[NAU881X_REG_PLL_K2] = (K >> 9) & 0x1FF;
+    nau881x->_register[NAU881X_REG_PLL_K1] = (K >> 18) & 0x3F;
+    nau881x->_register[NAU881X_REG_PLL_N] = n_regval;
+    return NAU881X_STATUS_OK;
+}
+
 /* ----- Reset ----- */
 nau881x_status_t NAU881x_SoftwareReset(NAU881x_t* nau881x)
 {
