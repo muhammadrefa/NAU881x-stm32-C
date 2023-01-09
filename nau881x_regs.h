@@ -122,9 +122,9 @@ typedef enum _nau881x_alc_mode
 typedef enum _nau881x_dac_samplerate
 {
     NAU881X_DAC_SAMPLERATE_NO_DEEMPHASIS = 0,
-    NAU881X_ADC_OVERSAMPLE_32KHZ = 1,
-    NAU881X_ADC_OVERSAMPLE_44KHZ = 2,
-    NAU881X_ADC_OVERSAMPLE_48KHZ = 3
+    NAU881X_DAC_SAMPLERATE_32KHZ = 1,
+    NAU881X_DAC_SAMPLERATE_44KHZ = 2,
+    NAU881X_DAC_SAMPLERATE_48KHZ = 3
 } nau881x_dac_samplerate_t;
 
 #ifdef __cplusplus
