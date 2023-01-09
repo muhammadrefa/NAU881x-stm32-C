@@ -777,7 +777,7 @@ nau881x_status_t NAU8814_Set_ThermalShutdown_Enable(NAU881x_t* nau8814, uint8_t 
     regval &= ~(1 << 1);
     regval |= (enable ? 1 : 0) << 1;
     NAU881X_REG_WRITE(nau8814->comm_handle, NAU881X_REG_OUTPUT_CTRL, regval);
-    regval = nau8814->_register[NAU881X_REG_OUTPUT_CTRL] = regval;
+    nau8814->_register[NAU881X_REG_OUTPUT_CTRL] = regval;
     return NAU881X_STATUS_OK;
 }
 
@@ -810,6 +810,164 @@ nau881x_status_t NAU881x_Set_PLL_FrequencyRatio(NAU881x_t* nau881x, uint8_t mclk
     nau881x->_register[NAU881X_REG_PLL_K2] = (K >> 9) & 0x1FF;
     nau881x->_register[NAU881X_REG_PLL_K1] = (K >> 18) & 0x3F;
     nau881x->_register[NAU881X_REG_PLL_N] = n_regval;
+    return NAU881X_STATUS_OK;
+}
+
+/* ----- Control interface ----- */
+nau881x_status_t NAU8814_Set_ControlInterface_SPI24bit(NAU881x_t* nau8814, uint8_t enable)
+{
+    uint16_t regval = nau8814->_register[NAU881X_REG_ADDITIONAL_IF_CTRL];
+    regval &= ~(1 << 8);
+    regval |= (enable ? 1 : 0) << 8;
+    NAU881X_REG_WRITE(nau8814->comm_handle, NAU881X_REG_ADDITIONAL_IF_CTRL, regval);
+    nau8814->_register[NAU881X_REG_ADDITIONAL_IF_CTRL] = regval;
+    return NAU881X_STATUS_OK;
+}
+
+/* ----- Digital audio interface ----- */
+nau881x_status_t NAU881x_Set_AudioInterfaceFormat(NAU881x_t* nau881x, nau881x_audio_iface_fmt_t format, nau881x_audio_iface_wl_t word_length)
+{
+    if (word_length > 4)
+        return NAU881X_STATUS_INVALID;
+    
+    uint16_t regval = nau881x->_register[NAU881X_REG_AUDIO_INTERFACE];
+    regval &= ~(0x0F << 3);
+    regval |= ((format & 0x03) << 3);
+    if (word_length != NAU881X_AUDIO_IFACE_WL_8BITS)
+        regval |= ((word_length & 0x03) << 5);
+    NAU881X_REG_WRITE(nau881x->comm_handle, NAU881X_REG_AUDIO_INTERFACE, regval);
+    nau881x->_register[NAU881X_REG_AUDIO_INTERFACE] = regval;
+
+    regval = nau881x->_register[NAU881X_REG_ADCOUT_DRIVE];
+    regval &= ~((1 << 1) | (1 << 8) | (1 << 6));   // PCM B, PCMTSEN, and PCM8BIT bits
+    regval |= ((format & (1 << 2)) ? 1 : 0) << 1;
+    regval |= ((format & (1 << 3)) ? 1 : 0) << 8;
+    if (word_length == NAU881X_AUDIO_IFACE_WL_8BITS)
+        regval |= (1 << 6);
+    NAU881X_REG_WRITE(nau881x->comm_handle, NAU881X_REG_ADCOUT_DRIVE, regval);
+    nau881x->_register[NAU881X_REG_ADCOUT_DRIVE] = regval;
+
+    return NAU881X_STATUS_OK;
+}
+
+nau881x_status_t NAU881x_Set_PCM_Timeslot(NAU881x_t* nau881x, uint16_t timeslot)
+{
+    if (timeslot > 0x3FF)
+        return NAU881X_STATUS_INVALID;
+    
+    uint16_t regval = timeslot & 0x1FF;
+    NAU881X_REG_WRITE(nau881x->comm_handle, NAU881X_REG_PCM_TIMESLOT, regval);
+    nau881x->_register[NAU881X_REG_PCM_TIMESLOT] = regval;
+
+    regval = nau881x->_register[NAU881X_REG_ADCOUT_DRIVE];
+    regval &= ~(1 << 0);
+    regval |= ((timeslot & 0x1FF) ? 1 : 0) << 0;
+    NAU881X_REG_WRITE(nau881x->comm_handle, NAU881X_REG_ADCOUT_DRIVE, regval);
+    nau881x->_register[NAU881X_REG_ADCOUT_DRIVE] = regval;
+
+    return NAU881X_STATUS_OK;
+}
+
+nau881x_status_t NAU881x_Set_FrameClock_Polarity(NAU881x_t* nau881x, uint8_t invert)
+{
+    uint16_t regval = nau881x->_register[NAU881X_REG_AUDIO_INTERFACE];
+    regval &= ~(1 << 7);
+    regval |= (invert ? 1 : 0) << 7;
+    NAU881X_REG_WRITE(nau881x->comm_handle, NAU881X_REG_AUDIO_INTERFACE, regval);
+    nau881x->_register[NAU881X_REG_AUDIO_INTERFACE] = regval;
+    return NAU881X_STATUS_OK;
+}
+
+nau881x_status_t NAU881x_Set_BCLK_Polarity(NAU881x_t* nau881x, uint8_t invert)
+{
+    uint16_t regval = nau881x->_register[NAU881X_REG_AUDIO_INTERFACE];
+    regval &= ~(1 << 8);
+    regval |= (invert ? 1 : 0) << 8;
+    NAU881X_REG_WRITE(nau881x->comm_handle, NAU881X_REG_AUDIO_INTERFACE, regval);
+    nau881x->_register[NAU881X_REG_AUDIO_INTERFACE] = regval;
+    return NAU881X_STATUS_OK;
+}
+
+nau881x_status_t NAU881x_Set_ADC_Data_Phase(NAU881x_t* nau881x, uint8_t in_right_phase_of_frame)
+{
+    uint16_t regval = nau881x->_register[NAU881X_REG_AUDIO_INTERFACE];
+    regval &= ~(1 << 1);
+    regval |= (in_right_phase_of_frame ? 1 : 0) << 1;
+    NAU881X_REG_WRITE(nau881x->comm_handle, NAU881X_REG_AUDIO_INTERFACE, regval);
+    nau881x->_register[NAU881X_REG_AUDIO_INTERFACE] = regval;
+    return NAU881X_STATUS_OK;
+}
+
+nau881x_status_t NAU881x_Set_DAC_Data_Phase(NAU881x_t* nau881x, uint8_t in_right_phase_of_frame)
+{
+    uint16_t regval = nau881x->_register[NAU881X_REG_AUDIO_INTERFACE];
+    regval &= ~(1 << 2);
+    regval |= (in_right_phase_of_frame ? 1 : 0) << 2;
+    NAU881X_REG_WRITE(nau881x->comm_handle, NAU881X_REG_AUDIO_INTERFACE, regval);
+    nau881x->_register[NAU881X_REG_AUDIO_INTERFACE] = regval;
+    return NAU881X_STATUS_OK;
+}
+
+nau881x_status_t NAU881x_Set_Clock(NAU881x_t* nau881x, uint8_t is_master, nau881x_bclkdiv_t bclk_divider, nau881x_mclkdiv_t mclk_divider, nau881x_clksel_t clock_source)
+{
+    if (bclk_divider >= 6)
+        return NAU881X_STATUS_INVALID;
+    if (mclk_divider >= 8)
+        return NAU881X_STATUS_INVALID;
+    if (clock_source >= 2)
+        return NAU881X_STATUS_INVALID;
+
+    uint16_t val = 0;
+    val |= (is_master ? 1 : 0) << 0;
+    val |= bclk_divider << 2;
+    val |= mclk_divider << 5;
+    val |= clock_source << 8;
+    NAU881X_REG_WRITE(nau881x->comm_handle, NAU881X_REG_CLOCK_CTRL_1, val);
+    nau881x->_register[NAU881X_REG_CLOCK_CTRL_1] = val;
+    return NAU881X_STATUS_OK;
+}
+
+nau881x_status_t NAU881x_Set_LOUTR(NAU881x_t* nau881x, uint8_t enable)
+{
+    uint16_t regval = nau881x->_register[NAU881X_REG_ADCOUT_DRIVE];
+    regval &= ~(1 << 2);
+    regval |= ((enable ? 1 : 0) << 2);
+    NAU881X_REG_WRITE(nau881x->comm_handle, NAU881X_REG_ADCOUT_DRIVE, regval);
+    nau881x->_register[NAU881X_REG_ADCOUT_DRIVE] = regval;
+    return NAU881X_STATUS_OK;
+}
+
+nau881x_status_t NAU881x_Set_ADC_Companding(NAU881x_t* nau881x, nau881x_companding_t companding)
+{
+    if (companding == 2 || companding > 3)
+        return NAU881X_STATUS_INVALID;
+    uint16_t regval = nau881x->_register[NAU881X_REG_COMPANDING_CTRL];
+    regval &= ~(0x03 << 1);
+    regval |= companding << 1;
+    NAU881X_REG_WRITE(nau881x->comm_handle, NAU881X_REG_COMPANDING_CTRL, regval);
+    nau881x->_register[NAU881X_REG_COMPANDING_CTRL] = regval;
+    return NAU881X_STATUS_OK;
+}
+
+nau881x_status_t NAU881x_Set_DAC_Companding(NAU881x_t* nau881x, nau881x_companding_t companding)
+{
+    if (companding == 2 || companding > 3)
+        return NAU881X_STATUS_INVALID;
+    uint16_t regval = nau881x->_register[NAU881X_REG_COMPANDING_CTRL];
+    regval &= ~(0x03 << 3);
+    regval |= companding << 3;
+    NAU881X_REG_WRITE(nau881x->comm_handle, NAU881X_REG_COMPANDING_CTRL, regval);
+    nau881x->_register[NAU881X_REG_COMPANDING_CTRL] = regval;
+    return NAU881X_STATUS_OK;
+}
+
+nau881x_status_t NAU881x_Set_Companding_WordLength_8bit(NAU881x_t* nau881x, uint8_t enable)
+{
+    uint16_t regval = nau881x->_register[NAU881X_REG_COMPANDING_CTRL];
+    regval &= ~(1 << 5);
+    regval |= (enable ? 1 : 0) << 5;
+    NAU881X_REG_WRITE(nau881x->comm_handle, NAU881X_REG_COMPANDING_CTRL, regval);
+    nau881x->_register[NAU881X_REG_COMPANDING_CTRL] = regval;
     return NAU881X_STATUS_OK;
 }
 
@@ -870,7 +1028,7 @@ nau881x_status_t NAU881x_SoftwareReset(NAU881x_t* nau881x)
     // Low power control
     nau881x->_register[NAU881X_REG_POWER_MANAGEMENT_4] = 0x0000;
     // PCM time slot & ADCOUT impedance option control
-    nau881x->_register[NAU881X_REG_TIMESLOT] = 0x0000;
+    nau881x->_register[NAU881X_REG_PCM_TIMESLOT] = 0x0000;
     nau881x->_register[NAU881X_REG_ADCOUT_DRIVE] = 0x0020;
     // Register ID
     nau881x->_register[NAU881X_REG_SILICON_REV] = 0x00EF;

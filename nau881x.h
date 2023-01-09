@@ -117,6 +117,22 @@ nau881x_status_t NAU8814_Set_ThermalShutdown_Enable(NAU881x_t* nau8814, uint8_t 
 nau881x_status_t NAU881x_Set_PLL_Enable(NAU881x_t* nau881x, uint8_t enable);
 nau881x_status_t NAU881x_Set_PLL_FrequencyRatio(NAU881x_t* nau881x, uint8_t mclk_div2, uint8_t N, uint32_t K);
 
+// Control interface
+nau881x_status_t NAU8814_Set_ControlInterface_SPI24bit(NAU881x_t* nau8814, uint8_t enable);
+
+// Digital audio interface
+nau881x_status_t NAU881x_Set_AudioInterfaceFormat(NAU881x_t* nau881x, nau881x_audio_iface_fmt_t format, nau881x_audio_iface_wl_t word_length);
+nau881x_status_t NAU881x_Set_PCM_Timeslot(NAU881x_t* nau881x, uint16_t timeslot);
+nau881x_status_t NAU881x_Set_FrameClock_Polarity(NAU881x_t* nau881x, uint8_t invert);
+nau881x_status_t NAU881x_Set_BCLK_Polarity(NAU881x_t* nau881x, uint8_t invert);
+nau881x_status_t NAU881x_Set_ADC_Data_Phase(NAU881x_t* nau8814, uint8_t in_right_phase_of_frame);
+nau881x_status_t NAU881x_Set_DAC_Data_Phase(NAU881x_t* nau8814, uint8_t in_right_phase_of_frame);
+nau881x_status_t NAU881x_Set_Clock(NAU881x_t* nau881x, uint8_t is_master, nau881x_bclkdiv_t bclk_divider, nau881x_mclkdiv_t mclk_divider, nau881x_clksel_t clock_source);
+nau881x_status_t NAU881x_Set_LOUTR(NAU881x_t* nau881x, uint8_t enable);
+nau881x_status_t NAU881x_Set_ADC_Companding(NAU881x_t* nau881x, nau881x_companding_t companding);
+nau881x_status_t NAU881x_Set_DAC_Companding(NAU881x_t* nau881x, nau881x_companding_t companding);
+nau881x_status_t NAU881x_Set_Companding_WordLength_8bit(NAU881x_t* nau881x, uint8_t enable);
+
 #ifdef __cplusplus
 }
 #endif

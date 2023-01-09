@@ -90,7 +90,11 @@ int main(void)
     - [X] Jack detect (NAU8814)
     - [X] Thermal shutdown (NAU8814)
 - [X] Clock generation
-- [ ] Digital audio interface
+- [X] Control interface
+    - [X] Control interface selection (NAU8814)
+- [X] Digital audio interface
+    - [X] Interface modes
+    - [X] Companding
 - [ ] Power supply
     - [ ] Power up sequence
     - [ ] Power down sequence

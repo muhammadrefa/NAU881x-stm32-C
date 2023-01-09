@@ -67,7 +67,7 @@ typedef enum _nau881x_register
     NAU881X_REG_MONO_MIXER_CTRL = 56,
 
     NAU881X_REG_POWER_MANAGEMENT_4 = 58,
-    NAU881X_REG_TIMESLOT = 59,
+    NAU881X_REG_PCM_TIMESLOT = 59,
     NAU881X_REG_ADCOUT_DRIVE = 60,
 
     NAU881X_REG_SILICON_REV = 62,
@@ -206,6 +206,61 @@ typedef enum _nau8814_gpio_function
     NAU8814_GPIO_FUNCTION_HIGH = 6,
     NAU8814_GPIO_FUNCTION_LOW = 7
 } nau8814_gpio_function_t;
+
+// See Digital Audio Interfaces section in the datasheet for more details
+typedef enum _nau881x_audio_iface_fmt
+{
+    NAU881X_AUDIO_IFACE_FMT_RIGHT_JUSTIFIED = 0,
+    NAU881X_AUDIO_IFACE_FMT_LEFT_JUSTIFIED = 1,
+    NAU881X_AUDIO_IFACE_FMT_I2S = 2,
+    NAU881X_AUDIO_IFACE_FMT_PCM_A = 3,
+    NAU881X_AUDIO_IFACE_FMT_PCM_B = 0b0100,         // PCMB bit set
+    NAU881X_AUDIO_IFACE_FMT_PCM_TIMESLOT = 0b1011   // PCMTSEN bit set
+} nau881x_audio_iface_fmt_t;
+
+typedef enum _nau881x_audio_iface_wl
+{
+    NAU881X_AUDIO_IFACE_WL_16BITS = 0,
+    NAU881X_AUDIO_IFACE_WL_20BITS = 1,
+    NAU881X_AUDIO_IFACE_WL_24BITS = 2,
+    NAU881X_AUDIO_IFACE_WL_32BITS = 3,
+    NAU881X_AUDIO_IFACE_WL_8BITS = 4
+} nau881x_audio_iface_wl_t;
+
+typedef enum _nau881x_bclkdiv
+{
+    NAU881X_BCLKDIV_1 = 0,
+    NAU881X_BCLKDIV_2 = 1,
+    NAU881X_BCLKDIV_4 = 2,
+    NAU881X_BCLKDIV_8 = 3,
+    NAU881X_BCLKDIV_16 = 4,
+    NAU881X_BCLKDIV_32 = 5 
+} nau881x_bclkdiv_t;
+
+typedef enum _nau881x_mclkdiv
+{
+    NAU881X_MCLKDIV_1 = 0,
+    NAU881X_MCLKDIV_1HALF = 1,
+    NAU881X_MCLKDIV_2 = 2,
+    NAU881X_MCLKDIV_3 = 3,
+    NAU881X_MCLKDIV_4 = 4,
+    NAU881X_MCLKDIV_6 = 5,
+    NAU881X_MCLKDIV_8 = 6,
+    NAU881X_MCLKDIV_12 = 7
+} nau881x_mclkdiv_t;
+
+typedef enum _nau881x_clksel
+{
+    NAU881X_CLKSEL_MCLK = 0,
+    NAU881X_CLKSEL_PLL = 1
+} nau881x_clksel_t;
+
+typedef enum _nau881x_companding
+{
+    NAU881X_COMPANDING_OFF = 0,
+    NAU881X_COMPANDING_ALAW = 2,
+    NAU881X_COMPANDING_ULAW = 3
+} nau881x_companding_t;
 
 typedef enum _nau881x_power_management_3
 {
