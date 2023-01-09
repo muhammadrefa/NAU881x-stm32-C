@@ -29,13 +29,12 @@ void MyI2C_Write(i2c_handle, i2c_address, register, value);
 uint16_t MyI2C_Read(i2c_handle, i2c_address, register);
 ```
 
-Edit the `nau881x.h` to define NAU881x part name and call your implementation
+Edit the `nau881x.h` to call your implementation
 ```C
 // --- nau881x.h ---
 
 #include "main.h"    // The location of the function prototype for the implementation
 
-#define NAU881X_PART NAU881X_PART_NAU8810
 #define NAU881X_REG_WRITE(handle, reg, val) MyI2C_Write(handle, NAU8810_I2C_ADDRESS, reg, val)
 #define NAU881X_REG_READ(handle, reg) MyI2C_Read(handle, NAU8810_I2C_ADDRESS, reg)
 ```

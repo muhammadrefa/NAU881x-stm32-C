@@ -23,12 +23,8 @@ nau881x_status_t NAU881x_Get_PGA_Input(NAU881x_t* nau881x, nau881x_input_t* inpu
 nau881x_status_t NAU881x_Set_PGA_Input(NAU881x_t* nau881x, nau881x_input_t input)
 {
     uint16_t regval = nau881x->_register[NAU881X_REG_INPUT_CTRL];
-#if NAU881X_PART == NAU881X_PART_NAU8814
-    regval &= ~(0x0007);
-#else
-    regval &= ~(0x0003);
-#endif
-    regval |= (uint16_t)input;
+    regval &= ~(0x0007);            // AUX bits in NAU8810 always zero
+    regval |= (uint16_t)input;      // TODO: Return invalid for AUX if NAU8810
     NAU881X_REG_WRITE(nau881x->comm_handle, NAU881X_REG_INPUT_CTRL, regval);
     nau881x->_register[NAU881X_REG_INPUT_CTRL] = regval;
     return NAU881X_STATUS_OK;
@@ -100,27 +96,25 @@ nau881x_status_t NAU881x_Set_PGA_Enable(NAU881x_t* nau881x, uint8_t enable)
     return NAU881X_STATUS_OK;
 }
 
-#if NAU881X_PART == NAU881X_PART_NAU8814
-nau881x_status_t NAU881x_Set_Aux_Enable(NAU881x_t* nau881x, uint8_t enable)
+nau881x_status_t NAU8814_Set_Aux_Enable(NAU881x_t* nau8814, uint8_t enable)
 {
-    uint16_t regval = nau881x->_register[NAU881X_REG_POWER_MANAGEMENT_1];
+    uint16_t regval = nau8814->_register[NAU881X_REG_POWER_MANAGEMENT_1];
     regval &= ~(1 << 6);
     regval |= (enable ? 1 : 0) << 6;
-    NAU881X_REG_WRITE(nau881x->comm_handle, NAU881X_REG_POWER_MANAGEMENT_1, regval);
-    nau881x->_register[NAU881X_REG_POWER_MANAGEMENT_1] = regval;
+    NAU881X_REG_WRITE(nau8814->comm_handle, NAU881X_REG_POWER_MANAGEMENT_1, regval);
+    nau8814->_register[NAU881X_REG_POWER_MANAGEMENT_1] = regval;
     return NAU881X_STATUS_OK;
 }
 
-nau881x_status_t NAU881x_Set_Aux_Mode(NAU881x_t* nau881x, nau881x_aux_mode_t mode)
+nau881x_status_t NAU8814_Set_Aux_Mode(NAU881x_t* nau8814, nau881x_aux_mode_t mode)
 {
-    uint16_t regval = nau881x->_register[NAU881X_REG_INPUT_CTRL];
+    uint16_t regval = nau8814->_register[NAU881X_REG_INPUT_CTRL];
     regval &= ~(1 << 3);
     regval |= mode << 3;
-    NAU881X_REG_WRITE(nau881x->comm_handle, NAU881X_REG_INPUT_CTRL, regval);
-    nau881x->_register[NAU881X_REG_INPUT_CTRL] = regval;
+    NAU881X_REG_WRITE(nau8814->comm_handle, NAU881X_REG_INPUT_CTRL, regval);
+    nau8814->_register[NAU881X_REG_INPUT_CTRL] = regval;
     return NAU881X_STATUS_OK;
 }
-#endif
 
 nau881x_status_t NAU881x_Set_PGA_Boost(NAU881x_t* nau881x, uint8_t state)
 {
@@ -137,10 +131,11 @@ nau881x_status_t NAU881x_Set_Boost_Volume(NAU881x_t* nau881x, nau881x_input_t in
     if (vol > 0x07)
         return NAU881X_STATUS_INVALID;
 
-#if NAU881X_PART == NAU881X_PART_NAU8810
-    if (input != NAU881X_INPUT_MICP)
-        return NAU881X_STATUS_INVALID;
-#endif
+    // TODO: Check if NAU8810 without #if macro because NAU8810 does not have AUX
+// #if NAU881X_PART == NAU881X_PART_NAU8810
+//     if (input != NAU881X_INPUT_MICP)
+//         return NAU881X_STATUS_INVALID;
+// #endif
 
     int8_t shift = -1;
     switch (input)

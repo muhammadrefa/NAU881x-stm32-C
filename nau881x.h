@@ -8,7 +8,6 @@ extern "C" {
 #include <stdint.h>
 #include "nau881x_regs.h"
 
-#define NAU881X_PART NAU881X_PART_NAU8810
 #define NAU881X_REG_WRITE(handle, reg, val) MyI2C_Write(handle, NAU881X_I2C_ADDRESS, reg, val)
 #define NAU881X_REG_READ(handle, reg) MyI2C_Read(handle, NAU881X_I2C_ADDRESS, reg)
 
