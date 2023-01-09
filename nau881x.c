@@ -377,7 +377,7 @@ nau881x_status_t NAU881x_Set_ALC_NoiseGate_Enable(NAU881x_t* nau881x, uint8_t en
     return NAU881X_STATUS_OK;
 }
 
-/* ----- DAC ----- */
+/* ----- DAC digital filter ----- */
 nau881x_status_t NAU881x_Set_ADC_DAC_Passtrough(NAU881x_t* nau881x, uint8_t enable)
 {
     uint16_t regval = nau881x->_register[NAU881X_REG_COMPANDING_CTRL];
@@ -505,6 +505,95 @@ nau881x_status_t NAU881x_Set_DAC_Limiter_VolumeBoost(NAU881x_t* nau881x, int8_t 
     regval |= (value) << 4;
     NAU881X_REG_WRITE(nau881x->comm_handle, NAU881X_REG_DAC_LIMITER_2, regval);
     nau881x->_register[NAU881X_REG_DAC_LIMITER_2] = regval;
+    return NAU881X_STATUS_OK;
+}
+
+nau881x_status_t NAU881x_Set_Equalizer_Path(NAU881x_t* nau881x, nau881x_eq_path_t path)
+{
+    uint16_t regval = nau881x->_register[NAU881X_REG_EQ_1];
+    regval &= ~(1 << 8);
+    regval |= path << 8;
+    NAU881X_REG_WRITE(nau881x->comm_handle, NAU881X_REG_EQ_1, regval);
+    nau881x->_register[NAU881X_REG_EQ_1] = regval;
+    return NAU881X_STATUS_OK;
+}
+
+nau881x_status_t NAU881x_Set_Equalizer_Bandwidth(NAU881x_t* nau881x, uint8_t equalizer_no, nau881x_eq_bandwidth_t bandwidth)
+{
+    if ((equalizer_no < 2) || (equalizer_no >= 5))
+        return NAU881X_STATUS_INVALID;
+    
+    uint8_t regnum = NAU881X_REG_EQ_1 + equalizer_no - 1;
+    uint16_t regval = nau881x->_register[regnum];
+    regval &= ~(1 << 8);
+    regval |= bandwidth << 8;
+    NAU881X_REG_WRITE(nau881x->comm_handle, regnum, regval);
+    nau881x->_register[regnum] = regval;
+    return NAU881X_STATUS_OK;
+}
+
+nau881x_status_t NAU881x_Set_Equalizer_Gain(NAU881x_t* nau881x, uint8_t equalizer_no, int8_t value)
+{
+    if ((value < -12) || (value > 12))
+        return NAU881X_STATUS_INVALID;
+    
+    uint8_t val = (value * (-1) + 12) & 0x1F;
+    uint8_t regnum = NAU881X_REG_EQ_1 + equalizer_no - 1;
+    uint16_t regval = nau881x->_register[regnum];
+    regval &= ~(0x1F << 0);
+    regval |= val << 0;
+    NAU881X_REG_WRITE(nau881x->comm_handle, regnum, regval);
+    nau881x->_register[regnum] = regval;
+    return NAU881X_STATUS_OK;
+}
+
+nau881x_status_t NAU881x_Set_Equalizer1_Frequency(NAU881x_t* nau881x, nau881x_eq1_cutoff_freq_t cutoff_freq)
+{
+    uint16_t regval = nau881x->_register[NAU881X_REG_EQ_1];
+    regval &= ~(0x03 << 5);
+    regval |= cutoff_freq << 5;
+    NAU881X_REG_WRITE(nau881x->comm_handle, NAU881X_REG_EQ_1, regval);
+    nau881x->_register[NAU881X_REG_EQ_1] = regval;
+    return NAU881X_STATUS_OK;
+}
+
+nau881x_status_t NAU881x_Set_Equalizer2_Frequency(NAU881x_t* nau881x, nau881x_eq2_center_freq_t center_freq)
+{
+    uint16_t regval = nau881x->_register[NAU881X_REG_EQ_2];
+    regval &= ~(0x03 << 5);
+    regval |= center_freq << 5;
+    NAU881X_REG_WRITE(nau881x->comm_handle, NAU881X_REG_EQ_2, regval);
+    nau881x->_register[NAU881X_REG_EQ_2] = regval;
+    return NAU881X_STATUS_OK;
+}
+
+nau881x_status_t NAU881x_Set_Equalizer3_Frequency(NAU881x_t* nau881x, nau881x_eq3_center_freq_t center_freq)
+{
+    uint16_t regval = nau881x->_register[NAU881X_REG_EQ_3];
+    regval &= ~(0x03 << 5);
+    regval |= center_freq << 5;
+    NAU881X_REG_WRITE(nau881x->comm_handle, NAU881X_REG_EQ_3, regval);
+    nau881x->_register[NAU881X_REG_EQ_3] = regval;
+    return NAU881X_STATUS_OK;
+}
+
+nau881x_status_t NAU881x_Set_Equalizer4_Frequency(NAU881x_t* nau881x, nau881x_eq4_center_freq_t center_freq)
+{
+    uint16_t regval = nau881x->_register[NAU881X_REG_EQ_4];
+    regval &= ~(0x03 << 5);
+    regval |= center_freq << 5;
+    NAU881X_REG_WRITE(nau881x->comm_handle, NAU881X_REG_EQ_4, regval);
+    nau881x->_register[NAU881X_REG_EQ_4] = regval;
+    return NAU881X_STATUS_OK;
+}
+
+nau881x_status_t NAU881x_Set_Equalizer5_Frequency(NAU881x_t* nau881x, nau881x_eq5_cutoff_freq_t cutoff_freq)
+{
+    uint16_t regval = nau881x->_register[NAU881X_REG_EQ_5];
+    regval &= ~(0x03 << 5);
+    regval |= cutoff_freq << 5;
+    NAU881X_REG_WRITE(nau881x->comm_handle, NAU881X_REG_EQ_5, regval);
+    nau881x->_register[NAU881X_REG_EQ_5] = regval;
     return NAU881X_STATUS_OK;
 }
 

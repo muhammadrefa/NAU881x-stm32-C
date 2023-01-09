@@ -1,7 +1,7 @@
 NAU881x audio codec library for STM32
 ======================================
 
-Compatible with NAU8810, NAU88C10, NAU8814, and NAU88C14. Work in progress and untested.
+Compatible with Nuvoton NAU8810, NAU88C10, NAU8814, and NAU88C14 mono audio codecs. Work in progress and untested.
 
 ## Useful links:
 - Product page: [NAU8810](https://www.nuvoton.com/products/smart-home-audio/audio-converters/audio-codec-series/nau8810yg/) [NAU88C10](https://www.nuvoton.com/products/smart-home-audio/audio-converters/audio-codec-series/nau88c10yg/) [NAU8814](https://www.nuvoton.com/products/smart-home-audio/audio-converters/audio-codec-series/nau8814yg/) [NAU88C14](https://www.nuvoton.com/products/smart-home-audio/audio-converters/audio-codec-series/nau88c14yg/)
@@ -78,9 +78,9 @@ int main(void)
     - [X] ADC gain
 - [X] Programmable gain amplifier (PGA)
     - [X] Automatic level control (ALC)
-- [ ] DAC digital filter
+- [X] DAC digital filter
     - [X] DAC
-    - [ ] 5-band equalizer
+    - [X] 5-band equalizer
 - [ ] Analog outputs
     - [ ] Speaker mixer
     - [ ] Mono mixer

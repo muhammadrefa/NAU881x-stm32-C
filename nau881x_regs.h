@@ -127,6 +127,58 @@ typedef enum _nau881x_dac_samplerate
     NAU881X_DAC_SAMPLERATE_48KHZ = 3
 } nau881x_dac_samplerate_t;
 
+typedef enum _nau881x_eq_path
+{
+    NAU881X_EQ_PATH_ADC = 0,
+    NAU881X_EQ_PATH_DAC = 1
+} nau881x_eq_path_t;
+
+typedef enum _nau881x_eq_bandwidth
+{
+    NAU881X_EQ_BW_NARROW = 0,
+    NAU881X_EQ_BW_WIDE = 1
+} nau881x_eq_bandwidth_t;
+
+typedef enum _nau881x_eq1_cutoff_freq
+{
+    NAU881X_EQ1_CUTOFF_80HZ = 0,
+    NAU881X_EQ1_CUTOFF_105HZ = 1,
+    NAU881X_EQ1_CUTOFF_135HZ = 2,
+    NAU881X_EQ1_CUTOFF_175HZ = 3
+} nau881x_eq1_cutoff_freq_t;
+
+typedef enum _nau881x_eq2_center_freq
+{
+    NAU881X_EQ2_CENTER_230HZ = 0,
+    NAU881X_EQ2_CENTER_300HZ = 1,
+    NAU881X_EQ2_CENTER_385HZ = 2,
+    NAU881X_EQ2_CENTER_500HZ = 3
+} nau881x_eq2_center_freq_t;
+
+typedef enum _nau881x_eq3_center_freq
+{
+    NAU881X_EQ3_CENTER_650HZ = 0,
+    NAU881X_EQ3_CENTER_850HZ = 1,
+    NAU881X_EQ3_CENTER_1100HZ = 2,
+    NAU881X_EQ3_CENTER_1400HZ = 3
+} nau881x_eq3_center_freq_t;
+
+typedef enum _nau881x_eq4_center_freq
+{
+    NAU881X_EQ4_CENTER_1800HZ = 0,
+    NAU881X_EQ4_CENTER_2400HZ = 1,
+    NAU881X_EQ4_CENTER_3200HZ = 2,
+    NAU881X_EQ4_CENTER_4100HZ = 3
+} nau881x_eq4_center_freq_t;
+
+typedef enum _nau881x_eq5_cutoff_freq
+{
+    NAU881X_EQ5_CUTOFF_5300HZ = 0,
+    NAU881X_EQ5_CUTOFF_6900HZ = 1,
+    NAU881X_EQ5_CUTOFF_9000HZ = 2,
+    NAU881X_EQ5_CUTOFF_11700HZ = 3
+} nau881x_eq5_cutoff_freq_t;
+
 #ifdef __cplusplus
 }
 #endif
