@@ -384,7 +384,7 @@ nau881x_status_t NAU881x_Set_ALC_NoiseGate_Enable(NAU881x_t* nau881x, uint8_t en
 }
 
 /* ----- DAC digital filter ----- */
-nau881x_status_t NAU881x_Set_ADC_DAC_Passtrough(NAU881x_t* nau881x, uint8_t enable)
+nau881x_status_t NAU881x_Set_ADC_DAC_Passthrough(NAU881x_t* nau881x, uint8_t enable)
 {
     uint16_t regval = nau881x->_register[NAU881X_REG_COMPANDING_CTRL];
     regval &= ~(1 << 0);
