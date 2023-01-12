@@ -95,7 +95,5 @@ int main(void)
 - [X] Digital audio interface
     - [X] Interface modes
     - [X] Companding
-- [ ] Power supply
-    - [ ] Power up sequence
-    - [ ] Power down sequence
-    - [ ] Power saving
+- [X] Power supply
+    - [X] Power up sequence

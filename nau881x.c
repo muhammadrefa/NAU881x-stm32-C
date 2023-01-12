@@ -7,7 +7,18 @@ nau881x_status_t NAU881x_Init(NAU881x_t* nau881x)
     // Datasheet page 64
     NAU881x_SoftwareReset(nau881x);
 
-    // TODO: Power up sequence
+    // Power up sequence
+    // Disable output boost stage for SPK and MOUT
+    nau881x->_register[NAU881X_REG_OUTPUT_CTRL] &= ~((1 << 2) | (1 << 3));
+    NAU881X_REG_WRITE(nau881x->comm_handle, NAU881X_REG_OUTPUT_CTRL, nau881x->_register[NAU881X_REG_OUTPUT_CTRL]);
+
+    // Set REFIMP to 80 ohm
+    nau881x->_register[NAU881X_REG_POWER_MANAGEMENT_1] |= (1 << 0);
+    NAU881X_REG_WRITE(nau881x->comm_handle, NAU881X_REG_POWER_MANAGEMENT_1, nau881x->_register[NAU881X_REG_POWER_MANAGEMENT_1]);
+
+    // Enable internal device bias (ABIASEN) and bias buffer (IOBUFEN)
+    nau881x->_register[NAU881X_REG_POWER_MANAGEMENT_1] |= ((1 << 3) | (1 << 2));
+    NAU881X_REG_WRITE(nau881x->comm_handle, NAU881X_REG_POWER_MANAGEMENT_1, nau881x->_register[NAU881X_REG_POWER_MANAGEMENT_1]);
 
     return NAU881X_STATUS_OK;
 }
