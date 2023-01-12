@@ -501,7 +501,7 @@ nau881x_status_t NAU881x_Set_DAC_Limiter_VolumeBoost(NAU881x_t* nau881x, uint8_t
     return NAU881X_STATUS_OK;
 }
 
-nau881x_status_t NAU881x_Set_DAC_Limiter_VolumeBoost(NAU881x_t* nau881x, int8_t value)
+nau881x_status_t NAU881x_Set_DAC_Limiter_Threshold(NAU881x_t* nau881x, int8_t value)
 {
     if ((value >= 0) || (value < -6))
         return NAU881X_STATUS_INVALID;
