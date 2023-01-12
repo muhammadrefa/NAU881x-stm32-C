@@ -982,6 +982,14 @@ nau881x_status_t NAU881x_Set_Companding_WordLength_8bit(NAU881x_t* nau881x, uint
     return NAU881X_STATUS_OK;
 }
 
+/* ----- Other ----- */
+nau881x_status_t NAU881x_Get_SiliconRevision(NAU881x_t* nau881x, uint8_t* silicon_revision)
+{
+    nau881x->_register[NAU881X_REG_SILICON_REV] = NAU881X_REG_READ(nau881x->comm_handle, NAU881X_REG_SILICON_REV);
+    *silicon_revision = nau881x->_register[NAU881X_REG_SILICON_REV] & 0xFF;
+    return NAU881X_STATUS_OK;
+}
+
 /* ----- Reset ----- */
 nau881x_status_t NAU881x_SoftwareReset(NAU881x_t* nau881x)
 {

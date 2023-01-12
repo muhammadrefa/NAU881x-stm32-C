@@ -133,6 +133,9 @@ nau881x_status_t NAU881x_Set_ADC_Companding(NAU881x_t* nau881x, nau881x_compandi
 nau881x_status_t NAU881x_Set_DAC_Companding(NAU881x_t* nau881x, nau881x_companding_t companding);
 nau881x_status_t NAU881x_Set_Companding_WordLength_8bit(NAU881x_t* nau881x, uint8_t enable);
 
+// Other
+nau881x_status_t NAU881x_Get_SiliconRevision(NAU881x_t* nau881x, uint8_t* silicon_revision);
+
 #ifdef __cplusplus
 }
 #endif
