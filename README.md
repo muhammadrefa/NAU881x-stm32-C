@@ -3,11 +3,11 @@ NAU881x audio codec library for STM32
 
 **Work in progress and untested**
 
-Compatible with Nuvoton NAU8810, NAU88C10, NAU8814, and NAU88C14 mono audio codecs. Specific NAU8814 (and NAU88C14) features are prefixed by `NAU8814_`
+Compatible with Nuvoton NAU8810, NAU88C10, NAU8814, and NAU88C14 mono audio codecs. Specific NAU8814 (and NAU88C14) features are prefixed by `NAU8814_`. It might be compatible with NAU8812
 
 ## Useful links:
 - Product page: [NAU8810](https://www.nuvoton.com/products/smart-home-audio/audio-converters/audio-codec-series/nau8810yg/) [NAU88C10](https://www.nuvoton.com/products/smart-home-audio/audio-converters/audio-codec-series/nau88c10yg/) [NAU8814](https://www.nuvoton.com/products/smart-home-audio/audio-converters/audio-codec-series/nau8814yg/) [NAU88C14](https://www.nuvoton.com/products/smart-home-audio/audio-converters/audio-codec-series/nau88c14yg/)
-- Datasheet: [NAU8810](https://datasheet.lcsc.com/lcsc/2202132130_Nuvoton-Tech-NAU8810YG_C2613464.pdf) [NAU8814](https://datasheet.lcsc.com/lcsc/1810221243_Nuvoton-Tech-NAU8814YG_C94774.pdf)
+- Datasheet: [NAU8810](https://www.nuvoton.com/export/resource-files/NAU8810_Datasheet_Rev_2.8.pdf) [NAU8812](https://www.nuvoton.com/export/resource-files/DS_NAU8812_Datasheet_EN_Rev2.9.pdf) [NAU8814](https://www.nuvoton.com/export/resource-files/en-us--DS_NAU8814_DataSheet_EN_Rev3.2.pdf)
 
 ## How to use
 Write your implementation to write/read register from the device. For example:
