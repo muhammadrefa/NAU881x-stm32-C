@@ -98,7 +98,7 @@ nau881x_status_t NAU881x_Set_Speaker_Source(NAU881x_t* nau881x, nau881x_output_s
 nau881x_status_t NAU881x_Set_Speaker_FromBypass_Attenuation(NAU881x_t* nau881x, uint8_t enable);
 nau881x_status_t NAU881x_Set_Speaker_Boost(NAU881x_t* nau881x, uint8_t enable);
 nau881x_status_t NAU881x_Set_Speaker_ZeroCross(NAU881x_t* nau881x, uint8_t state);
-nau881x_status_t NAU881X_Set_Speaker_Mute(NAU881x_t* nau881x, uint8_t state);
+nau881x_status_t NAU881x_Set_Speaker_Mute(NAU881x_t* nau881x, uint8_t state);
 nau881x_status_t NAU881x_Set_Speaker_Volume(NAU881x_t* nau881x, uint8_t val);
 nau881x_status_t NAU881x_Set_Speaker_Volume_db(NAU881x_t* nau881x, int8_t vol_db);
 uint8_t NAU881x_Get_Speaker_Volume(NAU881x_t* nau881x);

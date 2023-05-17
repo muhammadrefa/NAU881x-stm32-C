@@ -2,6 +2,11 @@
 #include "nau881x_regs.h"
 
 
+nau881x_status_t NAU881x_SoftwareReset(NAU881x_t* nau881x);
+nau881x_status_t NAU881x_Register_Write(NAU881x_t* nau881x, uint8_t register_addr, uint16_t value);
+uint16_t NAU881x_Register_GetValue(NAU881x_t* nau881x, uint8_t register_addr);
+
+
 nau881x_status_t NAU881x_Init(NAU881x_t* nau881x)
 {
     // Datasheet page 64
@@ -918,7 +923,7 @@ nau881x_status_t NAU881x_SoftwareReset(NAU881x_t* nau881x)
 }
 
 /* ----- Register write function ----- */
-nau881x_status_t NAU881x_Register_Write(NAU881x_t* nau881x, uint8_t register_addr, uint8_t value)
+nau881x_status_t NAU881x_Register_Write(NAU881x_t* nau881x, uint8_t register_addr, uint16_t value)
 {
     NAU881X_REG_WRITE(nau881x->comm_handle, register_addr, value);
     nau881x->_register[register_addr] = value;
