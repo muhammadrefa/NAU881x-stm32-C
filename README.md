@@ -16,12 +16,16 @@ Write your implementation to write/read register from the device. For example:
 
 void MyI2C_Write(I2C_HandleTypeDef* i2c_handle, uint8_t i2c_address, uint8_t register, uint16_t value)
 {
-    // TODO
+    HAL_I2C_Master_Transmit(i2c_handle, i2c_address, &register, 1, HAL_MAX_DELAY);
+    HAL_I2C_Master_Transmit(i2c_handle, i2c_address, &value, 2, HAL_MAX_DELAY);
 }
 
 uint16_t MyI2C_Read(I2C_HandleTypeDef* i2c_handle, uint8_t i2c_address, uint8_t register)
 {
-    // TODO
+    uint16_t value = 0;
+    HAL_I2C_Master_Transmit(i2c_handle, i2c_address, &register, 1, HAL_MAX_DELAY);
+    HAL_I2C_Master_Receive(i2c_handle, i2c_address, &value, 2, HAL_MAX_DELAY);
+    return value;
 }
 ```
 ```C
@@ -60,7 +64,10 @@ int main(void)
     // TODO
 
     // Make audio codec functional
-    // TODO
+    // Code below will route the audio from MICN to Speaker via Bypass (refer to General Block Diagram)
+    NAU881x_Set_PGA_Input(&nau8810, NAU881X_INPUT_MICN);
+    NAU881x_Set_Speaker_Source(&nau8810, NAU881X_OUTPUT_FROM_BYPASS);
+    NAU881x_Set_Output_Enable(&nau8810, NAU881X_OUTPUT_SPK);
 
     // ...
 }
