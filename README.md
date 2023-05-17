@@ -16,8 +16,8 @@ Write your implementation to write/read register from the device. For example:
 
 void MyI2C_Write(I2C_HandleTypeDef* i2c_handle, uint8_t i2c_address, uint8_t register, uint16_t value)
 {
-    HAL_I2C_Master_Transmit(i2c_handle, i2c_address, &register, 1, HAL_MAX_DELAY);
-    HAL_I2C_Master_Transmit(i2c_handle, i2c_address, &value, 2, HAL_MAX_DELAY);
+    uint8_t data[] = {register, value >> 8, value & 0xFF};
+    HAL_I2C_Master_Transmit(i2c_handle, i2c_address, data, sizeof(data), HAL_MAX_DELAY);
 }
 
 uint16_t MyI2C_Read(I2C_HandleTypeDef* i2c_handle, uint8_t i2c_address, uint8_t register)
